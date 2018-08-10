@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import {mapState} from 'vuex';
 export default {
     name: 'myAddress',
     data() {
@@ -35,9 +36,6 @@ export default {
             city: 3,
             district: 57,
             GetProvinceId: 2,
-            District: false,
-            Province: false,
-            City: false,
             // v-for循环判断是否为当前
             selected: false,
             info: [
@@ -3654,6 +3652,17 @@ export default {
             ]
         }
     },
+    computed:mapState({
+        District: state => {
+            return state.District
+        },
+        Province: state => {
+            return state.Province
+        },
+        City: state => {
+            return state.City
+        },
+    }),
     methods: {
         choseAdd: function() {
             this.showChose = true;
@@ -3672,7 +3681,9 @@ export default {
         },
         getProvinceId: function(code, input, index) {
             this.province = code;
-            this.Province = input;
+            this.$store.commit('changeProvince',{
+                Province:input
+            })
             this.showProvince = false;
             this.showCity = true;
             this.showDistrict = false;
@@ -3686,8 +3697,12 @@ export default {
             this.showCityList = false;
             this.showDistrictList = false;
             // 清除市级和区级选项
-            this.City = false;
-            this.District = false;
+            this.$store.commit('changeProvince',{
+                Province:false
+            })
+            this.$store.commit('changeCity',{
+                City:false
+            })
             // 选项页面的切换
             this.showProvince = true;
             this.showCity = false;
@@ -3695,7 +3710,9 @@ export default {
         },
         getCityId: function(code, input, index) {
             this.city = code;
-            this.City = input;
+            this.$store.commit('changeCity',{
+                City:input
+            })
             this.showProvince = false;
             this.showCity = false;
             this.showDistrict = true;
@@ -3711,7 +3728,9 @@ export default {
         },
         getDistrictId: function(code, input, index) {
             this.district = code;
-            this.District = input;
+            this.$store.commit('changeDistrict',{
+                District:input
+            })
             // 选择当前添加active
             this.showDistrictList.map(a => a.selected = false);
             this.showDistrictList[index].selected = true;
@@ -3735,12 +3754,12 @@ export default {
     },
     created(){
         let _this = this;
-        _this.$nextTick(()=>{
-            _this.$axios.get('http://10.88.77.13:8888/city.json')
-                .then(function (data) {
-                    _this.info = eval(data.data)
-                })
-        })
+        // _this.$nextTick(()=>{
+        //     _this.$axios.get('http://10.88.77.13:8888/city.json')
+        //         .then(function (data) {
+        //             _this.info = eval(data.data)
+        //         })
+        // })
     }
 }
 </script>

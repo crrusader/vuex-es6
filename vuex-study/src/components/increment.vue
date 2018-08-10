@@ -3,62 +3,55 @@
         <h2>简易计算</h2>
         <p>{{msg}}</p>
         <div class="">
-            <input type="button" value="-" @click='increseHandle'>
+            <input type="button" value="-" @click='increseHandle({msg})'>
             <span>{{num}}</span>
-            <input type="button" value="+" @click='addHandle'>
+            <input type="button" value="+" @click='decreseHandle({msg})'>
         </div>
         <div>
             <a href="#" @click.prevent='showCityList'>选择城市</a>
-            <div v-show='cityshow'>{{fillCity}}</div>
+            <div v-show='!cityshow'>{{fillCity}}</div>
         </div>
         <myAddress ref="getaddress"></myAddress>
+        <div class="333">
+            {{test}}
+        </div>
     </div>
 </template>
 
 <script>
 import myAddress from './cityselect.vue'
-
+import { mapState , mapActions } from 'vuex'
 
 export default {
     data(){
         return {
             msg:5,
             cityshow:false,
-            province:'',
+            province:''
         }
     },
     computed:{
-        num(){
-            this.$nextTick(() => {
-                // this.myCount = this.$cloneObj(this.$store.state);
-            })
-            return this.$store.state.count
-        },
-        fillCity(){
-            this.$nextTick(() => {
-                console.log(this.$refs.getaddress);
-                return 2
-            })
-            // this.cityshow = true;
-            // return this.$refs.getaddress.cityname()
-        }
+        ...mapState({
+            num: state => {
+                return state.count
+            },
+            test: () => {
+                return 'test'
+            },
+            fillCity(state){
+                setTimeout(()=>{
+                    // console.log(this);
+                })
+            }
+        })
     },
-    methods:{
-        addHandle(){
-            this.$store.commit('addIncrement',{
-                num:this.msg
-            })
-        },
-        increseHandle(){
-            this.$store.commit({
-                type:'deIncrement',
-                num:this.msg
-            })
-        },
+    methods:mapActions({
         showCityList(){
             this.$refs.getaddress.cityToggle()
-        }
-    },
+        },
+        increseHandle:'incrementAsync',
+        decreseHandle:'decrementAsync',
+    }),
     components:{
         myAddress
     }
@@ -70,7 +63,8 @@ export default {
         padding: 20px 0;
         position: relative;
         h2{
-            color: red;
+            color: black;
+            opacity: .3;
         }
         &:after{
             content: '';
